@@ -71,7 +71,7 @@ The Lean code in this repository was written by Claude, an AI
 model developed by Anthropic (model identifiers claude-opus-5-5 and claude-fable-5-1), in sessions
 guided by Giuliano Basso. He chose the statements to formalize, built the project, ran the axiom
 check in `scripts/CheckAxioms.lean` and compared the statements in `ProjectionConstants/Main.lean` with the
-errata. 
+articles. 
 
 
 
