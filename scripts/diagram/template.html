@@ -1,0 +1,712 @@
+<title>Projection Constants in Lean</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a radial blueprint — the library as a dendrogram around its main results, a quiet
+   header above and a reading rail beside it. */
+:root {
+  --paper: #f7f6f2;
+  --panel: #fdfcfa;
+  --ink: #1f1e1b;
+  --muted: #6d695f;
+  --faint: #a9a498;
+  --rule: #e4e0d6;
+  --center: #e1623a;
+  --b-found: #4a83c4;
+  --b-cl: #8479d6;
+  --b-dl: #69903f;
+  --b-etf: #d4930f;
+  --b-jfa: #c4527a;
+  --b-amop: #268f86;
+  --b-foursix: #a0409a;
+  --b-eucl: #0e95bb;
+  --b-stab: #c0392b;
+  --b-compl: #5f6b7a;
+  --b-grun: #8c5a2b;
+  --b-rudin: #2d4a8a;
+  --font-sans: "Albert Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #131316;
+    --panel: #19191d;
+    --ink: #ecebe6;
+    --muted: #a39f94;
+    --faint: #6c6961;
+    --rule: #2b2b31;
+    --center: #f07a50;
+    --b-found: #6fa3df;
+    --b-cl: #a59cf0;
+    --b-dl: #8fb964;
+    --b-etf: #efb23a;
+    --b-jfa: #e3789b;
+    --b-amop: #45bcb0;
+    --b-foursix: #d67fce;
+    --b-eucl: #4cc6ea;
+    --b-stab: #f26d6d;
+    --b-compl: #b3bcc8;
+    --b-grun: #d09a64;
+    --b-rudin: #8fa8e6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #131316;
+  --panel: #19191d;
+  --ink: #ecebe6;
+  --muted: #a39f94;
+  --faint: #6c6961;
+  --rule: #2b2b31;
+  --center: #f07a50;
+  --b-found: #6fa3df;
+  --b-cl: #a59cf0;
+  --b-dl: #8fb964;
+  --b-etf: #efb23a;
+  --b-jfa: #e3789b;
+  --b-amop: #45bcb0;
+  --b-foursix: #d67fce;
+  --b-eucl: #4cc6ea;
+  --b-stab: #f26d6d;
+  --b-compl: #b3bcc8;
+  --b-grun: #d09a64;
+  --b-rudin: #8fa8e6;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+}
+.wrap {
+  max-width: 1380px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 3vw, 40px);
+  padding-block: 28px 40px;
+}
+header { display: grid; gap: 10px; max-width: 80ch; }
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+}
+h1 {
+  font-size: clamp(26px, 3.2vw, 36px);
+  line-height: 1.12;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+  text-wrap: balance;
+}
+.lede { color: var(--muted); margin: 0; font-size: 16px; }
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin-top: 4px;
+  font-size: 13.5px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.stats b { color: var(--ink); font-weight: 600; }
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 28px;
+  margin-top: 22px;
+  align-items: start;
+}
+@media (min-width: 961px) {
+  .figure { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); }
+}
+@media (max-width: 960px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+}
+.figure {
+  position: relative;
+  min-width: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+#tree {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1520 / 1260;
+  touch-action: none;
+  cursor: grab;
+}
+#tree:active { cursor: grabbing; }
+.fig-tools {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  display: flex;
+  gap: 6px;
+}
+button, input {
+  font: inherit;
+  color: inherit;
+}
+.btn {
+  border: 1px solid var(--rule);
+  background: var(--panel);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn:hover { border-color: var(--faint); }
+.btn:focus-visible, input:focus-visible, .legend button:focus-visible, .mainlist button:focus-visible {
+  outline: 2px solid var(--center);
+  outline-offset: 2px;
+}
+.hint {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 10px 0 0;
+}
+aside { display: grid; gap: 22px; min-width: 0; }
+.section-title {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.legend { display: grid; gap: 2px; }
+.legend button {
+  display: grid;
+  grid-template-columns: 12px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: baseline;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  padding: 5px 6px;
+  cursor: pointer;
+}
+.legend button:hover, .legend button.on { background: color-mix(in srgb, var(--rule) 60%, transparent); }
+.swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; transform: translateY(1px); }
+.legend .name { font-weight: 500; }
+.legend .what { display: block; font-size: 12.5px; color: var(--muted); font-weight: 400; }
+.legend .count { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 13px; }
+.search { display: grid; gap: 6px; }
+.search input {
+  width: 100%;
+  border: 1px solid var(--rule);
+  background: var(--panel);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.search .result { font-size: 12.5px; color: var(--muted); min-height: 1.4em; }
+.card {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 14px 16px 16px;
+  display: grid;
+  gap: 8px;
+}
+.card .decl {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.card .meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.card .meta .kind {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  font-weight: 600;
+}
+.card .doc { margin: 0; font-size: 14px; overflow-wrap: anywhere; }
+.card .doc code, .mainlist code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background: color-mix(in srgb, var(--rule) 55%, transparent);
+  padding: 0 3px;
+  border-radius: 3px;
+}
+.card .nodoc { color: var(--faint); font-style: italic; }
+.path { font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; }
+.path span { font-family: var(--font-mono); font-size: 12px; color: var(--ink); }
+.mainlist { display: grid; gap: 2px; margin: 0; padding: 0; list-style: none; }
+.mainlist button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  padding: 5px 6px;
+  cursor: pointer;
+  font-size: 13.5px;
+}
+.mainlist button:hover, .mainlist button.on { background: color-mix(in srgb, var(--rule) 60%, transparent); }
+.mainlist .mname { font-family: var(--font-mono); font-size: 12.5px; font-weight: 500; }
+.mainlist .mdoc { display: block; color: var(--muted); font-size: 12.5px; line-height: 1.4; }
+/* the diagram */
+.link { fill: none; stroke-width: 0.9; stroke-opacity: 0.75; transition: stroke-opacity 0.15s; }
+.node { stroke: none; transition: opacity 0.15s; }
+.hubnode { display: none; }
+.lbl {
+  font-family: var(--font-sans);
+  paint-order: stroke;
+  stroke: var(--paper);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.lbl.branch { font-size: 25px; font-weight: 600; }
+.lbl.sub { font-size: 18px; font-weight: 500; }
+.lbl.center { font-size: 21px; font-weight: 700; fill: var(--ink); }
+@media (max-width: 600px) {
+  .lbl.sub { display: none; }
+}
+.leader { stroke: var(--ink); stroke-width: 0.8; }
+.leader.sublead { stroke-width: 0.9; stroke-dasharray: 2 3; opacity: 0.8; }
+svg.focus .leader.sublead { opacity: 0.25; }
+svg.focus .link { stroke-opacity: 0.12; }
+svg.focus .node { opacity: 0.18; }
+svg.focus .lbl.sub, svg.focus .lbl.branch { opacity: 0.35; }
+svg.focus .link.on { stroke-opacity: 1; stroke-width: 1.8; }
+svg.focus .node.on { opacity: 1; }
+svg.focus .lbl.on { opacity: 1; }
+.node.hit { opacity: 1 !important; }
+.ring { fill: none; stroke: var(--ink); stroke-width: 1.2; pointer-events: none; }
+@media (prefers-reduced-motion: reduce) {
+  .link, .node { transition: none; }
+}
+footer {
+  margin-top: 26px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 12.5px;
+  color: var(--muted);
+  display: grid;
+  gap: 4px;
+  max-width: 100ch;
+}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Lean 4 · Mathlib · dependency tree</div>
+    <h1>Projection constants in Lean</h1>
+    <p class="lede">Every dot is a declaration of the library. The branches grow outward from the main results: along a branch, each theorem or definition hangs off a result whose proof uses it.</p>
+    <div class="stats" id="stats"></div>
+  </header>
+
+  <div class="layout">
+    <div class="figure">
+      <svg id="tree" viewBox="-760 -630 1520 1260" role="img" aria-label="Radial dependency tree of the Lean library on projection constants"></svg>
+      <div class="fig-tools"><button class="btn" id="reset" type="button">Reset view</button></div>
+      <p class="hint">Hover or tap a dot for its statement. Scroll or pinch to zoom, drag to pan.</p>
+    </div>
+
+    <aside>
+      <div>
+        <h2 class="section-title">Parts of the library</h2>
+        <div class="legend" id="legend"></div>
+      </div>
+      <div class="search">
+        <label class="section-title" for="q">Find a declaration</label>
+        <input id="q" type="search" placeholder="Name or word, e.g. Golay" autocomplete="off" spellcheck="false">
+        <div class="result" id="qres" aria-live="polite"></div>
+      </div>
+      <div class="card" id="card" aria-live="polite"></div>
+    </aside>
+  </div>
+
+  <footer>
+    <div id="foot"></div>
+    <div>Sources: B. Deręgowska, B. Lewandowska, <i>A simple proof of the Grünbaum conjecture</i>, arXiv:2206.09454; <i>From Sidelnikov–Welch bounds to projection constants</i>, arXiv:2609.29422. G. Basso, <i>Computation of maximal projection constants</i>, J. Funct. Anal. 277 (2019), with its erratum, arXiv:2402.06672; <i>Almost minimal orthogonal projections</i>, arXiv:2001.08698. H. Kumar, B. Mohar, S. A. Mojallal, S. Pragada, <i>Stability of maximal relative projection constants</i>, arXiv:2609.03200. B. Grünbaum (1960), D. Rutovitz (1965).</div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+const DATA = /*__DATA__*/null;
+const STATS = /*__STATS__*/null;
+
+const BRANCHES = {
+  found:   { title: 'Foundations', what: 'λ(Y, X), λ(Y), λ(m); reduction to ℓ_{∞}^{N}; matrix projections in ℓ_{∞}^{N} and ℓ_{1}^{N}; orthogonal projections, sign matrices, Ky Fan sums' },
+  cl:      { title: 'Chalmers–Lewicki formula', what: 'Sion’s minimax and trace duality; Kadec–Snobar; the formula with sign matrices' },
+  dl:      { title: 'Bounds and exact values', what: 'König–Lewis–Lin and its equality case, Bukh–Cox, λ = μ, the bounds at the Gerzon bounds, exact values [DL]' },
+  etf:     { title: 'Equiangular tight frames', label: 'ETFs', what: 'Kernel-checked frames: Golay code, icosahedron, SICs' },
+  jfa:     { title: 'Π_{2} = 4/3', what: 'Corrected proof from [JFA] and its erratum: a second proof of Grünbaum’s conjecture' },
+  amop:    { title: 'Almost minimal projections', what: 'Main theorem of [AMOP]; the folklore strict monotonicity of λ_{ℝ}(n), with an explicit gap' },
+  foursix: { title: 'Π(4, 6) = 5/3', what: 'M_{1} by the erratum, M_{2}, M_{3}; all two-graphs on six vertices' },
+  stab:    { title: 'Stabilization', what: 'Kumar–Mohar–Mojallal–Pragada: λ(r, n) = λ(r) for n ≥ 2^{r} C(r+1, 2)' },
+  eucl:    { title: 'λ(ℓ_{2}^{n})', what: 'Grünbaum and Rutovitz: λ(ℓ_{2}^{n}) = n ∫|⟨u, e⟩| dσ, and its values via Γ' },
+  grun:    { title: 'Grünbaum (1960)', what: 'The extension property of ℓ_{∞} and the Banach–Mazur estimate; idempotent circulant matrices are minimal projections; λ(ℓ_{1}^{n}) and the regular polygons' },
+  rudin:   { title: 'Rudin (1962)', what: 'Averaging over compact groups and Rudin’s principle; on the circle: λ(𝒯_{n}, C(𝕋)) = L_{n} (Lozinskiĭ–Kharshiladze), the growth of the Lebesgue constants, divergent Fourier series, and the disc algebra is not complemented' },
+  compl:   { title: 'Complementary dimensions', what: 'Deręgowska–Lewandowska [DL26]: a recursive Sidelnikov–Welch inequality and λ(kM − m, kM) = λ(m) − 2m/(kM) + 1' },
+};
+const BRANCH_ORDER = ['found', 'cl', 'dl', 'stab', 'compl', 'eucl', 'grun', 'rudin', 'etf', 'jfa', 'amop', 'foursix'];
+
+// labelled sub-branches: declaration → label (in priority order)
+const SUBLABELS = [
+  ['maxProjConst_eq_iSup_of_le', 'Reduction to ℓ_{∞}^{N}'],
+  ['commute_of_isMaxOn', 'Maximizers commute'],
+  ['relProjConst_le_clConst', 'Sion’s minimax'],
+  ['clConst_le_maxRelProjConst', 'Trace duality'],
+  ['existsETF_tfae', 'KLL bound, equality case'],
+  ['quasiRelConst_real_le_delta', 'Bukh–Cox bound'],
+  ['maxProjConst_eq_quasiMaxConst', 'Splitting: λ = μ'],
+  ['MaximalETF.existsETF_twentyThree', 'Golay code: 276 lines in ℝ^{23}'],
+  ['MaximalETF.existsETF_two_complex', 'SICs via Seidel matrices'],
+  ['ETFCertificate.existsETF', 'Packed integer certificates'],
+  ['kyFanSum_two_weightedSign_le', 'Fan’s principle, two-graphs'],
+  ['GrunbaumConjecture.isGreatest_kyFanSum_two_weightedSign_R5', 'Proposition F'],
+  ['AlmostMinimal.exists_almost_minimal_orthProj', 'Rounding and blow-up'],
+  ['maxProjConst_real_lt_succ', 'λ_{ℝ}(k) < λ_{ℝ}(k+1)'],
+  ['FourSix.frobeniusInner_weightedSign_le_five_thirds', 'Sixteen two-graphs, kernel-checked'],
+  ['FourSix.kyFanSum_four_weightedSign_A1_le', 'M_{1} ≤ 5/3: the erratum’s certificate'],
+  ['Stabilization.IsMaximizer.reweight', 'Reweighting, Carathéodory'],
+  ['Euclidean.le_absProjConst', 'Lower bound in C(S)'],
+  ['Euclidean.relProjConst_le_mean', 'Upper bound: Hahn–Banach'],
+  ['recursive_welch_real', 'Recursive Sidelnikov–Welch'],
+  ['frame_estimate', 'Frame bound (Lemma 3.1)'],
+  ['relProjConst_range_circulant', 'Circulant projections'],
+  ['ContinuousLinearEquiv.absProjConst_le', 'Banach–Mazur lemma'],
+  ['sum_choose_mul_abs_sub', 'λ(ℓ_{1}^{n}): binomial sum'],
+  ['sum_range_abs_cos', 'Polygons: cosine sums'],
+  ['IsRepresentation.exists_forall_norm_le', 'Uniform boundedness (Baire)'],
+  ['IsProjectionOnto.eq_fourierPartialSum', 'The equivariant projection is S_{n}'],
+  ['four_div_pi_sq_mul_harmonic_le_lebesgueConst', 'L_{n} ≥ (4/π^{2}) H_{n}'],
+  ['exists_isProjectionOnto_spectralSubspace_iff', 'Theorem 2: multipliers'],
+];
+
+const KIND = { t: 'theorem', d: 'definition', s: 'structure', i: 'instance', o: 'opaque', a: 'axiom', h: 'part', r: 'main results' };
+
+const svg = d3.select('#tree');
+const gZoom = svg.append('g');
+const gLinks = gZoom.append('g');
+const gNodes = gZoom.append('g');
+const gLabels = gZoom.append('g');
+const gRing = gZoom.append('g');
+
+const root = d3.hierarchy(DATA, d => d.c);
+// order branches around the circle
+root.children.sort((a, b) => BRANCH_ORDER.indexOf(a.data.hub) - BRANCH_ORDER.indexOf(b.data.hub));
+root.each(d => {
+  if (d.depth === 0) d.branch = null;
+  else if (d.depth === 1) d.branch = d.data.hub;
+  else d.branch = d.parent.branch;
+});
+
+const R = 525;
+const layout = d3.tree()
+  .size([2 * Math.PI, R])
+  .separation((a, b) => (a.parent === b.parent ? 1 : 1.9) / Math.max(1, a.depth));
+layout(root);
+// radius by depth, with the outer levels compressed so that the branches fill the disc
+const maxDepth = d3.max(root.descendants(), d => d.depth);
+const R0 = 34;
+root.each(d => {
+  d.y = d.depth === 0 ? 0 : R0 + (R - R0) * Math.pow((d.depth - 1) / (maxDepth - 1), 0.62);
+});
+
+const color = b => b ? `var(--b-${b})` : 'var(--center)';
+const pt = (a, r) => [r * Math.sin(a), -r * Math.cos(a)];
+
+const links = root.links();
+const linkSel = gLinks.selectAll('path').data(links).join('path')
+  .attr('class', 'link')
+  .attr('stroke', d => color(d.target.branch))
+  .attr('d', d3.linkRadial().angle(d => d.x).radius(d => d.y));
+
+const nodes = root.descendants().filter(d => d.depth >= 2);
+const nodeSel = gNodes.selectAll('circle').data(nodes).join('circle')
+  .attr('class', 'node')
+  .attr('r', d => d.children ? 1.9 : 1.6)
+  .attr('fill', d => color(d.branch))
+  .attr('cx', d => pt(d.x, d.y)[0])
+  .attr('cy', d => pt(d.x, d.y)[1]);
+
+// center
+gNodes.append('circle').attr('r', 6.5).attr('fill', 'var(--center)');
+
+// ---- labels ----------------------------------------------------------------------------
+// `_{..}` and `^{..}` mark sub- and superscripts in labels
+function parseRich(str) {
+  const re = /([_^])\{([^}]*)\}/g;
+  const parts = [];
+  let last = 0, m;
+  while ((m = re.exec(str))) {
+    if (m.index > last) parts.push({ t: str.slice(last, m.index), s: 0 });
+    parts.push({ t: m[2], s: m[1] === '_' ? 1 : -1 });
+    last = re.lastIndex;
+  }
+  if (last < str.length) parts.push({ t: str.slice(last), s: 0 });
+  return parts;
+}
+function richWidth(str, size) {
+  return parseRich(str).reduce((w, p) => w + p.t.length * size * (p.s ? 0.4 : 0.56), 0);
+}
+function appendRich(textSel, str, size) {
+  let cur = 0;
+  for (const p of parseRich(str)) {
+    const target = p.s === 1 ? 0.28 * size : p.s === -1 ? -0.42 * size : 0;
+    const ts = textSel.append('tspan').text(p.t);
+    if (p.s) ts.attr('font-size', 0.72 * size);
+    if (target !== cur) ts.attr('dy', target - cur);
+    cur = target;
+  }
+}
+function htmlRich(str) {
+  return escapeHtml(str).replace(/_\{([^}]*)\}/g, '<sub>$1</sub>').replace(/\^\{([^}]*)\}/g, '<sup>$1</sup>');
+}
+const nodeXY = nodes.map(d => pt(d.x, d.y));
+function envAll(angle, width) {
+  let r = 0;
+  for (const e of nodes) {
+    let da = Math.abs(e.x - angle);
+    da = Math.min(da, 2 * Math.PI - da);
+    if (da < width && e.y > r) r = e.y;
+  }
+  return r;
+}
+const boxes = [];
+function overlaps(b) {
+  return boxes.some(o => !(b.x2 < o.x1 || b.x1 > o.x2 || b.y2 < o.y1 || b.y1 > o.y2));
+}
+function placeLabel(text, angle, radius, cls, fill, node, tries = 5) {
+  const size = cls === 'branch' ? 25 : 18;
+  const w = richWidth(text, size);
+  const h = size * 1.25;
+  for (let k = 0; k < tries; k++) {
+    const r = radius + k * 16;
+    const [x, y] = pt(angle, r);
+    const s = Math.sin(angle);
+    const anchor = s > 0.2 ? 'start' : s < -0.2 ? 'end' : 'middle';
+    const x1 = anchor === 'start' ? x : anchor === 'end' ? x - w : x - w / 2;
+    const yb = Math.cos(angle) > 0.5 ? y - 4 : Math.cos(angle) < -0.5 ? y + h - 2 : y + size * 0.35;
+    const box = { x1: x1 - 3, x2: x1 + w + 3, y1: yb - size, y2: yb + 4 };
+    const hitsNode = nodeXY.some(([nx, ny]) => nx > box.x1 - 2 && nx < box.x2 + 2 && ny > box.y1 - 2 && ny < box.y2 + 2);
+    if (!overlaps(box) && !hitsNode && x1 > -752 && x1 + w < 752 && box.y1 > -626 && box.y2 < 626) {
+      boxes.push(box);
+      const t = gLabels.append('text')
+        .attr('class', `lbl ${cls}`)
+        .attr('x', x).attr('y', yb)
+        .attr('text-anchor', anchor)
+        .attr('fill', fill)
+        .datum(node);
+      appendRich(t, text, size);
+      return { angle, r };
+    }
+  }
+  return null;
+}
+function angularSpan(d) {
+  const xs = d.descendants().map(e => e.x);
+  return [d3.min(xs), d3.max(xs)];
+}
+// outer envelope of a subtree near a given angle
+function envelope(d, angle, width) {
+  const near = d.descendants().filter(e => Math.abs(e.x - angle) < width);
+  return near.length ? d3.max(near, e => e.y) : d3.max(d.descendants(), e => e.y);
+}
+// center label with a leader line, as in a blueprint
+gLabels.append('line').attr('class', 'leader').attr('x1', 5).attr('y1', -5).attr('x2', 30).attr('y2', -30);
+gLabels.append('text').attr('class', 'lbl center').attr('x', 34).attr('y', -34).text('Main results');
+boxes.push({ x1: 0, x2: 160, y1: -58, y2: -26 });
+
+function placeSub(name, text) {
+  const d = byName.get(name);
+  if (!d) return;
+  const [a0, a1] = angularSpan(d);
+  const mid = (a0 + a1) / 2;
+  const own = d3.max(d.descendants(), e => e.y);
+  const placed = placeLabel(text, mid, envAll(mid, 0.04) + 10, 'sub', color(d.branch), d, 18);
+  if (placed && placed.r - own > 70) {
+    // a thin leader from the sub-branch to its label
+    const [x0, y0] = pt(placed.angle, own + 8);
+    const [x1, y1] = pt(placed.angle, placed.r - 6);
+    gLabels.insert('line', ':first-child').attr('class', 'leader sublead')
+      .attr('x1', x0).attr('y1', y0).attr('x2', x1).attr('y2', y1)
+      .attr('stroke', color(d.branch)).datum(d);
+  }
+}
+const byName = new Map(root.descendants().map(d => [d.data.n, d]));
+// the parts first, then the most characteristic sub-branches, then the other sub-branches
+const FIRST = new Set(['MaximalETF.existsETF_twentyThree', 'Euclidean.le_absProjConst',
+  'Euclidean.relProjConst_le_mean', 'Stabilization.IsMaximizer.reweight']);
+for (const hub of root.children) {
+  const [a0, a1] = angularSpan(hub);
+  const mid = (a0 + a1) / 2;
+  placeLabel(BRANCHES[hub.data.hub].label || BRANCHES[hub.data.hub].title, mid, envAll(mid, 0.1) + 22,
+    'branch', color(hub.data.hub), hub, 24);
+}
+for (const [name, text] of SUBLABELS) if (FIRST.has(name)) placeSub(name, text);
+for (const [name, text] of SUBLABELS) if (!FIRST.has(name)) placeSub(name, text);
+
+// ---- zoom ------------------------------------------------------------------------------
+const zoom = d3.zoom().scaleExtent([0.8, 10]).on('zoom', e => gZoom.attr('transform', e.transform));
+svg.call(zoom).on('dblclick.zoom', null);
+document.getElementById('reset').addEventListener('click', () => {
+  svg.transition().duration(350).call(zoom.transform, d3.zoomIdentity);
+});
+
+// ---- focus and details -------------------------------------------------------------------
+const ring = gRing.append('circle').attr('class', 'ring').attr('r', 5).attr('visibility', 'hidden');
+let pinned = null;
+
+function focusSet(set) {
+  if (!set) {
+    svg.classed('focus', false);
+    linkSel.classed('on', false);
+    nodeSel.classed('on', false);
+    gLabels.selectAll('text').classed('on', false);
+    return;
+  }
+  svg.classed('focus', true);
+  linkSel.classed('on', l => set.has(l.target));
+  nodeSel.classed('on', d => set.has(d));
+  gLabels.selectAll('text').classed('on', function () { const d = d3.select(this).datum(); return d && set.has(d); });
+}
+function pathSet(d) {
+  const s = new Set();
+  for (let e = d; e; e = e.parent) s.add(e);
+  return s;
+}
+function escapeHtml(s) {
+  return s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+function md(s) {
+  return escapeHtml(s)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+}
+const card = document.getElementById('card');
+function showNode(d) {
+  if (!d) return showMain();
+  const b = d.branch;
+  const file = d.data.f ? d.data.f.replace(/\./g, '/') + '.lean' : '';
+  const anc = d.ancestors().slice(1).filter(e => e.depth >= 2).map(e => `<span>${escapeHtml(e.data.n)}</span>`);
+  card.innerHTML = `
+    <div class="meta"><span class="kind" style="color:${color(b)}">${KIND[d.data.k] || ''}</span>
+      <span>${htmlRich(BRANCHES[b].title)}</span></div>
+    <div class="decl">${escapeHtml(d.data.n)}</div>
+    ${d.data.d ? `<p class="doc">${md(d.data.d)}</p>` : '<p class="doc nodoc">No docstring.</p>'}
+    <div class="meta"><span>${escapeHtml(file)}${d.data.l ? ':' + d.data.l : ''}</span></div>
+    ${anc.length ? `<div class="path">Used for ${anc.join(' → ')} → main results</div>` : '<div class="path">Used directly for the main results or by other parts.</div>'}`;
+  const [x, y] = pt(d.x, d.y);
+  ring.attr('cx', x).attr('cy', y).attr('visibility', 'visible');
+  ring.attr('stroke', color(b));
+}
+function showMain() {
+  ring.attr('visibility', 'hidden');
+  const items = DATA.main.map((m, i) => `<li><button type="button" data-i="${i}"><span class="mname">${escapeHtml(m.n)}</span><span class="mdoc">${md(m.d.split(/(?<=\.)\s/)[0] || '')}</span></button></li>`).join('');
+  card.innerHTML = `
+    <div class="meta"><span class="kind" style="color:var(--center)">main results</span><span>MainResults.lean</span></div>
+    <p class="doc">${md(DATA.d)}</p>
+    <ul class="mainlist">${items}</ul>`;
+  card.querySelectorAll('.mainlist button').forEach(btn => {
+    const m = DATA.main[+btn.dataset.i];
+    const enter = () => {
+      const set = new Set([root]);
+      for (const u of m.u) { const d = byName.get(u); if (d) for (const e of pathSet(d)) set.add(e); }
+      focusSet(set);
+      card.querySelectorAll('.mainlist button').forEach(b => b.classList.toggle('on', b === btn));
+    };
+    btn.addEventListener('mouseenter', enter);
+    btn.addEventListener('focus', enter);
+    btn.addEventListener('click', enter);
+    btn.addEventListener('mouseleave', () => { if (!pinned) focusSet(null); });
+  });
+}
+
+// hover via Delaunay for small targets
+const delaunay = d3.Delaunay.from(nodes, d => pt(d.x, d.y)[0], d => pt(d.x, d.y)[1]);
+function nearest(event) {
+  const [px, py] = d3.pointer(event, gZoom.node());
+  const i = delaunay.find(px, py);
+  const d = nodes[i];
+  const [x, y] = pt(d.x, d.y);
+  const k = d3.zoomTransform(svg.node()).k;
+  const scale = svg.node().getBoundingClientRect().width / 1520;
+  return Math.hypot(px - x, py - y) * k * scale < 14 ? d : null;
+}
+svg.on('pointermove', event => {
+  if (pinned) return;
+  const d = nearest(event);
+  if (d) { focusSet(pathSet(d)); showNode(d); }
+  else { focusSet(null); showMain(); }
+});
+svg.on('pointerleave', () => { if (!pinned) { focusSet(null); showMain(); } });
+svg.on('click', event => {
+  const d = nearest(event);
+  if (d) { pinned = d; focusSet(pathSet(d)); showNode(d); }
+  else { pinned = null; focusSet(null); showMain(); }
+});
+
+// ---- legend --------------------------------------------------------------------------------
+const legend = document.getElementById('legend');
+for (const hub of root.children) {
+  const b = hub.data.hub;
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.innerHTML = `<span class="swatch" style="background:${color(b)}"></span>
+    <span><span class="name">${htmlRich(BRANCHES[b].title)}</span><span class="what">${htmlRich(BRANCHES[b].what)}</span></span>
+    <span class="count">${hub.descendants().length - 1}</span>`;
+  const on = () => { focusSet(new Set(hub.descendants().concat([root]))); legend.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === btn)); };
+  const off = () => { if (!pinned) focusSet(null); legend.querySelectorAll('button').forEach(x => x.classList.remove('on')); };
+  btn.addEventListener('mouseenter', on);
+  btn.addEventListener('focus', on);
+  btn.addEventListener('mouseleave', off);
+  btn.addEventListener('blur', off);
+  legend.appendChild(btn);
+}
+
+// ---- search --------------------------------------------------------------------------------
+const q = document.getElementById('q');
+const qres = document.getElementById('qres');
+q.addEventListener('input', () => {
+  const s = q.value.trim().toLowerCase();
+  nodeSel.classed('hit', false).attr('r', d => d.children ? 1.9 : 1.6);
+  if (!s) { qres.textContent = ''; pinned = null; focusSet(null); showMain(); return; }
+  const byNameHits = nodes.filter(d => d.data.n.toLowerCase().includes(s));
+  const byDocHits = nodes.filter(d => !byNameHits.includes(d) && (d.data.d || '').toLowerCase().includes(s));
+  const hits = byNameHits.concat(byDocHits);
+  qres.textContent = hits.length ? `${hits.length} match${hits.length === 1 ? '' : 'es'}${hits.length > 1 ? ' · showing the first' : ''}` : 'No declaration matches.';
+  if (!hits.length) { focusSet(null); return; }
+  const set = new Set();
+  hits.forEach(d => pathSet(d).forEach(e => set.add(e)));
+  focusSet(set);
+  nodeSel.filter(d => hits.includes(d)).classed('hit', true).attr('r', 3.6);
+  pinned = hits[0];
+  showNode(hits[0]);
+});
+
+// ---- stats ---------------------------------------------------------------------------------
+document.getElementById('stats').innerHTML =
+  `<span><b>${STATS.decls}</b> declarations</span><span><b>${STATS.files}</b> files</span>` +
+  `<span><b>${STATS.lines.toLocaleString('en-US')}</b> lines of Lean</span>` +
+  `<span><b>0</b> sorry · no <code style="font-family:var(--font-mono);font-size:12.5px">native_decide</code></span>`;
+document.getElementById('foot').textContent =
+  `Axioms of every main result: propext, Classical.choice, Quot.sound. Built with Lean ${STATS.lean} and Mathlib; the certificates for the 28 and 276 equiangular lines are checked by the kernel.`;
+
+showMain();
+</script>
