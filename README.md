@@ -27,7 +27,7 @@ formalizes the main results on projection constants of
 * **[Ru]** W. Rudin, *Projections on invariant subspaces*, Proc. Amer. Math. Soc. 13 (1962),
   429–432.
 
-An overview of which results of these articles are formalized can be found below.
+An overview of which results of these articles are actually formalized can be found below. With a few exeptions these are mostly the main reults of the articles. 
 Everything is proved from the standard axioms (`propext`, `Classical.choice`, `Quot.sound`):
 no `sorry`, no `native_decide`. The explicit frames (for example the 276 equiangular lines in
 `ℝ²³`), the classification of the two-graphs on six vertices and the sums-of-squares certificates
