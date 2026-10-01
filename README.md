@@ -23,7 +23,7 @@ formalizes the main results on projection constants of
  
 * **[Ru]** W. Rudin, Projections on invariant subspaces, Proc. Amer. Math. Soc. 13 (1962), 429–432
 
-An overview of which results of these articles are actually formalized can be found below. With a few exeptions these are mostly the main reults of the articles. 
+An overview of which results of these articles are actually formalized can be found below. With a few exceptions these are mostly the main results of the articles. 
 Everything is proved from the standard axioms (`propext`, `Classical.choice`, `Quot.sound`):
 no `sorry`, no `native_decide`. The explicit frames (for example the 276 equiangular lines in
 `ℝ²³`), the classification of the two-graphs on six vertices and the sums-of-squares certificates
@@ -82,11 +82,11 @@ The folders are organized by topic. All declarations live in the namespace
 | `ETF/` | Equiangular tight frames; a kernel-checked certificate format (`Certificate`); explicit maximal ETFs (`Maximal/`: integer certificates for `m = 2, 7, 23`, Seidel matrices for the icosahedron and the SICs in `ℂ²` and `ℂ³`) |
 | `Bounds/` | The bound of König, Lewis and Lin and its equality case (`KLL`, `KLLEquality`), the bound of Bukh and Cox (`BukhCox`), the bounds at the Gerzon bounds (`Gerzon`), the recursive Sidelnikov–Welch inequality (`Welch`), a frame bound (`FrameBound`) |
 | `Values` | `λ_ℝ(m)` for `m = 2, 3, 7, 23`, `λ_ℂ(m)` given a SIC and for `m = 1, 2, 3`, Zauner's conjecture; the regular hexagon attains `λ_ℝ(2)` |
-| `GrunbaumConjecture/` | [JFA] with [JFA-E]: `Π₂ = 4/3` (a second proof of `λ_ℝ(2) = 4/3`), via sign patterns of maximizers, two-graphs, the matrix `A₆`, and the characteristic polynomial of the weighted pentagon `R₅` |
-| `FourSix/` | [JFA, §4.4] with [JFA-E]: `Π(4, 6) = Π(5, 6) = 5/3`, with sums-of-squares certificates and a kernel-checked treatment of all sixteen two-graphs on six vertices |
-| `AlmostMinimal/` | [AMOP]: almost minimal orthogonal projections; the folklore strict monotonicity of `λ_ℝ(n)`, with an explicit gap (`Mono`) |
+| `GrunbaumConjecture/` | [JFA] with [Err]: `Π₂ = 4/3` (a second proof of `λ_ℝ(2) = 4/3`), via sign patterns of maximizers, two-graphs, the matrix `A₆`, and the characteristic polynomial of the weighted pentagon `R₅` |
+| `FourSix/` | [JFA, §4.4] with [Err]: `Π(4, 6) = Π(5, 6) = 5/3`, with sums-of-squares certificates and a kernel-checked treatment of all sixteen two-graphs on six vertices |
+| `AlmostMinimal/` | [AMOP] with [JFA-E, Remark E]: almost minimal orthogonal projections; the folklore strict monotonicity of `λ_ℝ(n)`, with an explicit gap (`Mono`) |
 | `Stabilization/` | [KMMP]: first-order conditions of maximizers (`Maximizer`), reweighting inside a sign class (`Reweight`), Carathéodory's theorem for cones (`Caratheodory`), and `λ_ℝ(r, n) = λ_ℝ(r)` for `n ≥ 2^r C(r+1, 2)` (`Main`) |
-| `Euclidean/` | [G], [R]: invariant measures on the sphere and the symmetry lemma (`Sphere`); the lower bound through `C(S, 𝕜)` (`LowerBound`); the upper bound by discretization, signed cyclic shifts and Hahn–Banach (`UpperBound`); `λ(𝕜ⁿ) = n ∫ |⟪u, e⟫| dν / ν(S)` (`Formula`); polar coordinates (`Polar`); the Gamma-function closed forms and `λ(ℓ₂²ᵐ⁺¹(ℝ)) = λ(ℓ₁²ᵐ⁺¹)` (`Values`) |
+| `Euclidean/` | [G]: invariant measures on the sphere and the symmetry lemma (`Sphere`); the lower bound through `C(S, 𝕜)` (`LowerBound`); the upper bound by discretization, signed cyclic shifts and Hahn–Banach (`UpperBound`); `λ(𝕜ⁿ) = n ∫ |⟪u, e⟫| dν / ν(S)` (`Formula`); polar coordinates (`Polar`); the Gamma-function closed forms and `λ(ℓ₂²ᵐ⁺¹(ℝ)) = λ(ℓ₁²ᵐ⁺¹)` (`Values`) |
 | `Complementary/` | [DL26]: complementary projections and repeated frames (`Complement`); complementary dimensions and the explicit families (`Main`) |
 | `MainResults` | The main theorems, restated in elementary terms, with the corresponding results of the literature |
 | `scripts/` | Axiom check, negative tests for the certificates, the generator of the diagram |
@@ -131,9 +131,9 @@ The folders are organized by topic. All declarations live in the namespace
 | `λ_ℂ(m) = (1 + (m-1)√(m+1))/m` given a SIC in `ℂ^m`; unconditional for `m = 1, 2, 3` | [DL, Thm 2.5] | `maxProjConst_complex_eq_of_sic`, `maxProjConst_complex_values` |
 | Zauner's conjecture implies [DL, Conjecture 2.1] | [DL] | `maxProjConst_complex_eq_of_zaunerConjecture` |
 | The formula of Chalmers and Lewicki with sign matrices | [JFA, Thm 2.1] | `maxProjConst_real_eq_sSup` |
-| `Π₂ = 4/3`, and a second proof of `λ_ℝ(2) = 4/3` | [JFA], [JFA-E] | `isGreatest_signMatrixValues_two`, `ProjectionConstants.GrunbaumConjecture.maxProjConst_real_two` |
-| `Π(4, 6) = 5/3`; by-product `Π(5, 6) = 5/3` | [JFA, §4.4], [JFA-E] | `maxRelProjConst_four_six`, `maxRelProjConst_five_six` |
-| Almost minimal orthogonal projections, for `E ⊆ ℓ₁^d = PiLp 1 _` | [AMOP, Thm 1.2] | `exists_almost_minimal_orthogonal_projection` |
+| `Π₂ = 4/3`, and a second proof of `λ_ℝ(2) = 4/3` | [JFA], [Err] | `isGreatest_signMatrixValues_two`, `ProjectionConstants.GrunbaumConjecture.maxProjConst_real_two` |
+| `Π(4, 6) = 5/3`; by-product `Π(5, 6) = 5/3` | [JFA, §4.4], [Err] | `maxRelProjConst_four_six`, `maxRelProjConst_five_six` |
+| Almost minimal orthogonal projections, for `E ⊆ ℓ₁^d = PiLp 1 _` | [AMOP, Thm 1.2], [JFA-E, Remark E] | `exists_almost_minimal_orthogonal_projection` |
 | `λ_ℝ(n)` is strictly increasing; explicit gap `λ_ℝ(k) + 1/(51200 k³) ≤ λ_ℝ(k+1)` | folklore | `strictMono_maxProjConst_real`, `maxProjConst_real_add_le_succ` |
 | Stabilization: `λ_ℝ(r, n) = λ_ℝ(r)` for `n ≥ 2^r C(r+1, 2)`; the supremum defining `λ_ℝ(r)` is attained | [KMMP, Thm 1.3] | `maxRelProjConst_eq_maxProjConst`, `exists_weightedAbsSum_eq_maxProjConst` |
 | Recursive Sidelnikov–Welch inequality: `X_{2t} ≥ (2t-1)/(m+2t-2) X_{2t-2}` over `ℝ`, `X_{2t} ≥ t/(m+t-1) X_{2t-2}` over `ℂ`, where `X_k = ∑ᵢⱼ wᵢwⱼ\|⟨xᵢ, xⱼ⟩\|^k` | [DL26, Thm 2.1] | `recursive_welch_real`, `recursive_welch_complex` |
@@ -142,23 +142,23 @@ The folders are organized by topic. All declarations live in the namespace
 | Complementary dimensions: `λ_𝕂(kM - m, kM) = λ_𝕂(m) - 2m/(kM) + 1` given a maximal ETF in `𝕂^m`, attained with equal weights | [DL26, Thm 3.1] | `maxRelProjConst_compl_real`, `maxRelProjConst_compl_complex` |
 | Hyperplanes: `λ_𝕂(N-1, N) = 2 - 2/N` | [DL26] | `maxRelProjConst_hyperplane` |
 | `λ_ℝ(3k-2, 3k) = 7/3 - 4/(3k)`, `λ_ℝ(6k-3, 6k) = (3+√5)/2 - 1/k`, `λ_ℝ(28k-7, 28k) = 7/2 - 1/(2k)`, `λ_ℝ(276k-23, 276k) = 17/3 - 1/(6k)`, `λ_ℂ(4k-2, 4k) = (3+√3)/2 - 1/k`, `λ_ℂ(9k-3, 9k) = 8/3 - 2/(3k)` | [DL26] | `maxRelProjConst_compl_values` |
-| `λ(ℓ₂ⁿ(𝕜)) = n ∫ \|⟪u, e⟫\| dν(u) / ν(S)` for every invariant finite measure `ν ≠ 0` on the sphere | [G], [R], [DGMMM] | `absProjConst_euclideanSpace_eq` |
-| Grünbaum: `λ(ℓ₂ⁿ(ℝ)) = 2 Γ(n/2 + 1) / (√π Γ((n+1)/2))`; Rutovitz: `λ(ℓ₂ⁿ(ℂ)) = (√π/2) n! / Γ(n + 1/2)` | [G], [R] | `absProjConst_euclideanSpace_real`, `absProjConst_euclideanSpace_complex` |
+| `λ(ℓ₂ⁿ(𝕜)) = n ∫ \|⟪u, e⟫\| dν(u) / ν(S)` for every invariant finite measure `ν ≠ 0` on the sphere | [G] | `absProjConst_euclideanSpace_eq` |
+| Grünbaum: `λ(ℓ₂ⁿ(ℝ)) = 2 Γ(n/2 + 1) / (√π Γ((n+1)/2))`; Rutovitz: `λ(ℓ₂ⁿ(ℂ)) = (√π/2) n! / Γ(n + 1/2)` | [G] | `absProjConst_euclideanSpace_real`, `absProjConst_euclideanSpace_complex` |
 | `λ(ℓ₂²(ℝ)) = 4/π`, `λ(ℓ₂³(ℝ)) = 3/2`, `λ(ℓ₂²(ℂ)) = 4/3` | [G, Thm 2] | `absProjConst_euclideanSpace_values` |
-| `λ(ℓ₂ⁿ(ℝ)) = n Γ(n/2) / (√π Γ((n+1)/2))` (Grünbaum: `≤`; Rutovitz: `=`) | [G, Thm 4], [R] | `absProjConst_euclideanSpace_real_eq_grunbaum` |
-| `λ(ℓ₂²ᵐ⁺¹(ℝ)) = λ(ℓ₁²ᵐ⁺¹) = (2m+1) C(2m, m) / 4ᵐ` | [G, §5], [R] | `absProjConst_euclideanSpace_real_odd` |
+| `λ(ℓ₂ⁿ(ℝ)) = n Γ(n/2) / (√π Γ((n+1)/2))` (Grünbaum: `≤`; Rutovitz: `=`) | [G, Thm 4] | `absProjConst_euclideanSpace_real_eq_grunbaum` |
+| `λ(ℓ₂²ᵐ⁺¹(ℝ)) = λ(ℓ₁²ᵐ⁺¹) = (2m+1) C(2m, m) / 4ᵐ` | [G, §5] | `absProjConst_euclideanSpace_real_odd` |
 | `λ` is an isometric invariant; `λ(Y) = λ(Y, ℓ∞^N)` for `Y ⊆ ℓ∞^N` | [G, §1] | `absProjConst_congr`, `absProjConst_eq_relProjConst` |
 | Banach–Mazur: `λ(Y) ≤ ‖T‖ ‖T⁻¹‖ λ(X)`; for norms `‖·‖₁ ≤ ‖·‖₂ ≤ μ ‖·‖₁`, `λ(X₂) ≤ μ λ(X₁)` | [G, §3, Lemma] | `absProjConst_le_mul_norm_mul_norm`, `absProjConst_le_mul_of_le_of_le` |
 | Idempotent circulant matrices `P = (v(g-h))` are minimal: `λ(range P) = ∑_g \|v g\|` | | `absProjConst_range_circulant` |
 | `λ(ℓ₁ⁿ) = n C(n-1, ⌊(n-1)/2⌋) / 2ⁿ⁻¹`; `λ(ℓ₁²ᵐ⁺¹) = λ(ℓ₁²ᵐ⁺²)` | [G, Thm 3] | `absProjConst_l1`, `absProjConst_l1_odd_eq_even` |
 | Regular `2N`-gon plane: `λ = (2/N) ∑_{k<N} \|cos(kπ/N)\|`, `= (2/N) cot(π/2N)` (`N` even), `= 2/(N sin(π/2N))` (`N` odd) | [G, Thm 1] | `absProjConst_regularPolygon`, `absProjConst_regularPolygon_of_even`, `absProjConst_regularPolygon_of_odd` |
 | Regular `2ⁿ`-gon: `λ = 2²⁻ⁿ cot(2⁻ⁿπ)`; square, hexagon, octagon: `1`, `4/3`, `(1+√2)/2` | [G, Thm 1, §3] | `absProjConst_regularPolygon_two_pow`, `absProjConst_regularPolygon_values` |
-| The hexagon attains `λ_ℝ(2) = 4/3`; `λ(Y) ≤ 4/3 < 3/2` for real planes | [G, §6, Thm 5], [CL] | `absProjConst_regularPolygon_three_eq_maxProjConst`, `absProjConst_le_four_thirds` |
+| The hexagon attains `λ_ℝ(2) = 4/3`; `λ(Y) ≤ 4/3 < 3/2` for real planes | [G, §6, Thm 5], [DL, Thm 2.4] | `absProjConst_regularPolygon_three_eq_maxProjConst`, `absProjConst_le_four_thirds` |
 | Rudin's averaging theorem: `sup_g ‖ρ g‖ = M < ∞`, and an equivariant projection `Q` with `‖Q‖ ≤ M² ‖P‖` | [Ru, Thm 1, (4)] | `exists_isProjectionOnto_isEquivariant` |
 | Rudin's principle: a unique equivariant projection `P₀` onto a finite-dimensional invariant subspace has `λ(Y, X) = ‖P₀‖` | [Ru] | `relProjConst_eq_norm` |
-| Lozinskiĭ–Kharshiladze: `λ(𝒯ₙ, C(𝕋)) = ‖Sₙ‖ = Lₙ = T⁻¹ ∫_0^T \|∑_{\|k\| ≤ n} e^{2πikx/T}\| dx` | [DGMMM, §1], [Ru, §4] | `relProjConst_trigPoly` |
+| Lozinskiĭ–Kharshiladze: `λ(𝒯ₙ, C(𝕋)) = ‖Sₙ‖ = Lₙ = T⁻¹ ∫_0^T \|∑_{\|k\| ≤ n} e^{2πikx/T}\| dx` | [Ru, §4] | `relProjConst_trigPoly` |
 | `λ(𝒯₀, C(𝕋)) = 1`, `λ(𝒯₁, C(𝕋)) = 1/3 + 2√3/π`; `(4/π²) log (n+1) ≤ λ(𝒯ₙ, C(𝕋)) ≤ 1 + log (2n+1)`, so `λ(𝒯ₙ, C(𝕋)) → ∞` | | `relProjConst_trigPoly_values`, `relProjConst_trigPoly_bounds`, `tendsto_relProjConst_trigPoly_atTop` |
-| Kharshiladze–Lozinskiĭ: for projections `Pₙ` onto `𝒯ₙ`, some `f ∈ C(𝕋)` has `sup ‖Pₙ f‖ = ∞` | [DGMMM, §1] | `exists_not_bddAbove_of_isProjectionOnto` |
+| Kharshiladze–Lozinskiĭ: for projections `Pₙ` onto `𝒯ₙ`, some `f ∈ C(𝕋)` has `sup ‖Pₙ f‖ = ∞` | | `exists_not_bddAbove_of_isProjectionOnto` |
 | du Bois-Reymond: a continuous function whose Fourier series diverges at `0` | | `exists_not_bddAbove_fourierPartialSum_apply_zero` |
 | `C_N(𝕋)` is complemented ⇔ `1_N` is a bounded Fourier multiplier; if `N` is periodic up to finitely many places, it is complemented | [Ru, Thm 2, §4] | `exists_isProjectionOnto_spectralSubspace_iff`, `exists_isProjectionOnto_spectralSubspace_of_periodic` |
 | The disc algebra `{f ∈ C(𝕋) : f̂(k) = 0 for k < 0}` is not complemented in `C(𝕋)` | [Ru, §4] | `not_exists_isProjectionOnto_discAlgebra` |
@@ -181,18 +181,18 @@ The folders are organized by topic. All declarations live in the namespace
   computed by *packing*: `⟨w, w'⟩` is one base-`B` digit of `pack w · pack (reverse w')`
   (`Packing.pack_mul_div_mod`). So the 37 950 inner products of the 276 lines cost one
   big-number multiplication each, and the kernel checks the certificate in about 15 seconds.
-* **`Π₂ = 4/3`** (`GrunbaumConjecture/`, [JFA-E]). By the formula with sign matrices, `Π₂` is
+* **`Π₂ = 4/3`** (`GrunbaumConjecture/`, [Err]). By the formula with sign matrices, `Π₂` is
   the supremum of `kyFanSum 2 (√D S √D)`. A maximizer has the strict sign pattern of vectors in the plane, has
   no zero weight, no `K₄` and no coclique of order `4`; instead of the Frankl–Füredi
   classification, a direct argument shows that it is, up to switching and relabelling, a
-  principal submatrix of `A₆`. `A₆` itself is excluded ([JFA-E, Lemma D]), and the
+  principal submatrix of `A₆`. `A₆` itself is excluded ([Err, Lemma D]), and the
   characteristic polynomial of `√D R₅ √D` gives `kyFanSum 2 (√D R₅ √D) ≤ 4/3`
-  ([JFA-E, Proposition F]).
-* **`Π(4, 6) = 5/3`** (`FourSix/`). The erratum proves `M₁ ≤ 5/3` by a certificate: a positive
+  ([Err, Lemma E and Proposition F]).
+* **`Π(4, 6) = 5/3`** (`FourSix/`). [Err] proves `M₁ ≤ 5/3` by a certificate: a positive
   semidefinite `C` with diagonal `2/3` and `A1 + C ⪰ 0` gives
   `kyFanSum 4 (√D A1 √D) ≤ Tr(√D (A1 + C) √D) = ∑ⱼ dⱼ (1 + Cⱼⱼ) = 5/3`
   (`FourSix.frobeniusInner_weightedSign_le_of_certificate`). `kyFanSum_four_weightedSign_A1_le`
-  uses exactly the `C` of the erratum (six unit vectors in `ℝ²`, entries in `ℚ(√3)`); the
+  uses exactly the `C` of [Err] (six unit vectors in `ℝ²`, entries in `ℚ(√3)`); the
   positive definiteness of `A1 + C` is checked through its `LDLᵀ` factorization. The same
   argument, with rational matrices `C`, gives `M₂ ≤ 5/3` (replacing Lieb–Siedentop concavity, the
   symmetrization lemma, the cubic estimate and the Lagrange multipliers of the paper) and the
@@ -305,7 +305,7 @@ The folders are organized by topic. All declarations live in the namespace
   complemented in `L¹`) and the extension of §4 to compact abelian groups (Cohen) are not
   formalized.
 * The theorem of Lozinskiĭ and Kharshiladze is proved for the relative constant `λ(𝒯ₙ, C(𝕋))`.
-  It equals the absolute projection constant `λ(𝒯ₙ)` of [DGMMM], because `C(𝕋)**` is a
+  It equals the absolute projection constant `λ(𝒯ₙ)`, because `C(𝕋)**` is a
   `1`-injective space; this is not formalized. The asymptotics `Lₙ = (4/π²) log n + O(1)` are formalized only through the bounds
   `(4/π²) log (n+1) ≤ Lₙ ≤ 1 + log (2n+1)`.
 * In [JFA, §4.4], `M₂ ≤ 5/3` is proved with calculus (Lieb–Siedentop, Lemmas 4.4 and 4.5,
