@@ -14,43 +14,20 @@ formalizes the main results on projection constants of
   (arXiv:2402.06672);
 
 
-* **[AMOP]** G. Basso, *Almost minimal orthogonal projections*, arXiv:2001.08698: the main
-  theorem (Theorem 1.2); the library also proves the folklore result that `λ_ℝ(n)` is strictly
-  increasing, with the explicit gap `λ_ℝ(k) + 1/(51200 k³) ≤ λ_ℝ(k + 1)`;
+* **[AMOP]** G. Basso, *Almost minimal orthogonal projections*, arXiv:2001.08698;
 
 * **[KMMP]** H. Kumar, B. Mohar, S. A. Mojallal, S. Pragada, *Stability of maximal relative
-  projection constants*, arXiv:2609.03200: `λ_ℝ(r, n) = λ_ℝ(r)` for all `n ≥ 2^r C(r+1, 2)`;
+  projection constants*, arXiv:2609.03200;
 
-* **[G]** B. Grünbaum, *Projection constants*, Trans. Amer. Math. Soc. 95 (1960), 451–465:
-  all results. Theorem 1 (the planes whose unit ball is a regular `2ⁿ`-gon, generalized to all
-  regular `2N`-gons, with the hexagon `λ = 4/3` of the remark in §3), Theorem 3
-  (`λ(ℓ₁ⁿ) = n C(n-1, ⌊(n-1)/2⌋) / 2ⁿ⁻¹` and `λ(ℓ₁²ᵐ⁻¹) = λ(ℓ₁²ᵐ)`), the lemma of §3 (`λ` is
-  Lipschitz for the Banach–Mazur distance), Theorems 2 and 4 on Euclidean spaces (with equality in
-  Theorem 4, due to **[R]** D. Rutovitz, *Some parameters associated with finite-dimensional
-  Banach spaces*, J. London Math. Soc. 40 (1965)) and the remark `λ(ℓ₂²ᵐ⁻¹(ℝ)) = λ(ℓ₁²ᵐ⁻¹)` of
-  §5. Theorem 5 is superseded by the bound of Kadec and Snobar and by `λ_ℝ(2) = 4/3`, both in the
-  library, and Grünbaum's conjecture of §6 (the hexagon is extremal) is proved. The Euclidean
-  formulas `λ(ℓ₂ⁿ(ℝ)) = 2 Γ(n/2 + 1) / (√π Γ((n+1)/2))` and `λ(ℓ₂ⁿ(ℂ)) = (√π/2) n! / Γ(n + 1/2)`
-  are proved via the spherical-mean formula `λ(ℓ₂ⁿ) = n ∫_S |⟪u, e⟫| dσ(u)` as presented in
-  **[DGMMM]** A. Defant, D. Galicer, M. Mansilla, M. Mastyło, S. Muro, *Projection constants for
-  spaces of multivariate polynomials*, arXiv:2208.06467;
+* **[G]** B. Grünbaum, *Projection constants*, Trans. Amer. Math. Soc. 95 (1960), 451–465;
 
 * **[DL26]** B. Deręgowska, B. Lewandowska, *From Sidelnikov–Welch bounds to projection
-  constants*, arXiv:2609.29422: the recursive Sidelnikov–Welch inequality, and
-  `λ_𝕂(kM - m, kM) = λ_𝕂(m) - 2m/(kM) + 1` whenever `𝕂^m` admits a maximal equiangular tight
-  frame of `M` vectors;
+  constants*, arXiv:2609.29422;
 
 * **[Ru]** W. Rudin, *Projections on invariant subspaces*, Proc. Amer. Math. Soc. 13 (1962),
-  429–432: Theorem 1 (averaging over a compact group, with the uniform bound (4) and the estimate
-  `‖Q‖ ≤ M² ‖P‖`), its finite version and Rudin's principle (a unique equivariant projection is
-  minimal), and the case `C(𝕋)` of §4: Theorem 2 reduced to Fourier multipliers, its "if" part
-  (periodic sets up to finitely many places), and the theorem that the disc algebra is not
-  complemented in `C(𝕋)`. With it come the classical results on the trigonometric polynomials
-  `𝒯ₙ ⊆ C(𝕋)`: the theorem of Lozinskiĭ and Kharshiladze `λ(𝒯ₙ, C(𝕋)) = ‖Sₙ‖ = Lₙ` (the Lebesgue
-  constant), `λ(𝒯₁, C(𝕋)) = 1/3 + 2√3/π`, `(4/π²) log (n + 1) ≤ Lₙ ≤ 1 + log (2n + 1)`, the
-  theorem of Kharshiladze and Lozinskiĭ that no sequence of projections onto `𝒯ₙ` converges
-  strongly, and du Bois-Reymond's continuous function with a divergent Fourier series.
+  429–432.
 
+An overview of which results of these articles are formalized can be found below.
 Everything is proved from the standard axioms (`propext`, `Classical.choice`, `Quot.sound`):
 no `sorry`, no `native_decide`. The explicit frames (for example the 276 equiangular lines in
 `ℝ²³`), the classification of the two-graphs on six vertices and the sums-of-squares certificates
