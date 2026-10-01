@@ -5,7 +5,7 @@
 A Lean 4 / Mathlib library on projection constants of finite-dimensional normed spaces. It
 formalizes the main results on projection constants of
 
-* **[DL]** B. Deręgowska and B. Lewandowska, A simple proof of the Grünbaum conjecture, J. Funct. Anal. 285 (2023), no. 2, Paper No. 109950, arXiv:2206.09454.
+* **[DL]** B. Deręgowska and B. Lewandowska, A simple proof of the Grünbaum conjecture, J. Funct. Anal. 285 (2023), no. 2, Paper No. 109950, arXiv:2206.09454.;
 * **[JFA]** G. Basso, Computation of maximal projection constants, J. Funct. Anal. 277 (2019), no. 10, 3560–3585, arXiv:1901.07866.
 * **[JFA-E]** G. Basso, Corrigendum to “Computation of maximal projection constants”, J. Funct. Anal. 287 (2024), no. 5, Paper No. 110491, arXiv:2402.06672.
 * **[AMOP]** G. Basso, Almost minimal orthogonal projections, Israel J. Math. 243 (2021), no. 1, 355–376, arXiv:2001.08698.
